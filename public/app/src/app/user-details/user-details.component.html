@@ -1,0 +1,15 @@
+<div>
+    <div><span>Name :</span> {{userDataJSON.name}}</div>
+    <div><span>Id :</span> {{userDataJSON.id}}</div>
+    <div><span>HandlerId :</span> @{{userDataJSON.screen_name}}</div>
+    <div><span>Location :</span> {{userDataJSON.location}}</div>
+    <div><span>Followers :</span> {{userDataJSON.followers_count}}</div>
+    <br>
+    <div><textarea [(ngModel)] = "userTweet" name="" id="" cols="30" rows="10"></textarea></div>
+    <button (click) = "tweet()"> Add Tweet</button> &nbsp;&nbsp; <span *ngIf = "isPosted" >Posted!</span>
+</div>
+<div>
+    <span>
+        {{ userData }}
+    </span>
+</div>

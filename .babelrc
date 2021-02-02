@@ -1,0 +1,17 @@
+{
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    ["module-resolver", {
+      "root": ["./"],
+      "alias": {
+        "@app/config": ["./dist/config"],
+        "@app/controllers": ["./dist/controllers"],
+        "@app/interfaces": ["./dist/shared/interfaces"],
+        "@app/enums": ["./dist/shared/enums"]
+      }
+    }]
+  ]
+}
