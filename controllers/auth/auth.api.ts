@@ -3,8 +3,8 @@ import { OAuth } from "oauth";
 import * as Twit from "twit";
 
 
-const CONSUMER_KEY = 'G93tTgjMW2gGG3OWLAqnXAYC6';
-const CONSUMER_SECRET = 'aFc7KO1zURZ3uEB3gKce9QfvIFurDqSpBTY3eqbND8ErWav8RD';
+const CONSUMER_KEY = '';
+const CONSUMER_SECRET = '';
 const userFBContext = new Map();
 
 var oAuthTokenSecret = '';
