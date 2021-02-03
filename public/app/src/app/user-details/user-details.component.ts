@@ -12,10 +12,12 @@ import { ApplicationService } from '@app/application.service';
 export class UserDetailsComponent implements OnInit {
 
   userData = '';
-  userDataJSON : any = {};
+  userDataJSON: any = {};
   userId: any;
   userTweet = '';
-  isPosted:boolean = false;
+  isPosted: boolean = false;
+  fileToUpload: any;
+  fileBase64Content: string | ArrayBuffer | null = '';
 
   constructor(private apiClient: ApplicationService, private route: ActivatedRoute) {
 
@@ -32,15 +34,34 @@ export class UserDetailsComponent implements OnInit {
     })
   }
 
-  tweet(): void{
-    if(this.userTweet){
-      this.apiClient.updateStatus(this.userId, this.userTweet).subscribe(data =>{
-        if(data.response.id){
+  tweet(): void {
+    if (this.userTweet) {
+      this.apiClient.updateStatus(this.userId, this.userTweet, this.fileBase64Content as string).subscribe(data => {
+        if (data.response.id) {
           this.isPosted = true;
+          this.fileBase64Content = '';
           this.userTweet = '';
+          this.fileToUpload = null;
         }
       })
     }
+  }
+
+  handleFileInput(event: any) {
+    this.fileToUpload = event.target.files[0];
+    this.toBase64(this.fileToUpload)
+  }
+
+  async toBase64(file: any) {
+    const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.fileBase64Content = (reader.result as string).split(",")[1];
+      };
+      reader.onerror = error => {
+        console.error(error);
+        
+      };
   }
 
 }

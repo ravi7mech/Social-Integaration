@@ -8,9 +8,9 @@ const CONSUMER_SECRET = '';
 const userFBContext = new Map();
 
 var oAuthTokenSecret = '';
-var oAuthAccessToken = '';
-var oAuthAccessTokenSecret = '';
-const NG_ROK_URL = 'https://9eadfca65a65.ngrok.io';
+var oAuthAccessToken = ''; // use your conumer api token here
+var oAuthAccessTokenSecret = ''; // use your conumer api token secret here
+const NG_ROK_URL = 'https://a35b6f97396b.ngrok.io';
 
 const oauth = new OAuth(
   'https://api.twitter.com/oauth/request_token',
@@ -23,7 +23,7 @@ const oauth = new OAuth(
 );
 
 
-const createTwitterBus = (oAuthAccessToken, oAuthAccessTokenSecret) => new Twit({
+const twitterApi = (oAuthAccessToken, oAuthAccessTokenSecret) => new Twit({
   consumer_key: CONSUMER_KEY,
   consumer_secret: CONSUMER_SECRET,
   access_token: oAuthAccessToken,
@@ -32,6 +32,7 @@ const createTwitterBus = (oAuthAccessToken, oAuthAccessTokenSecret) => new Twit(
 
 
 export function getOAuthRequestToken(req: Request, res: Response, next: NextFunction) {
+  console.log(NG_ROK_URL);
 
   oauth.getOAuthRequestToken((err, OAuthToken, OAuthTokenSecret, results) => {
 
@@ -66,7 +67,7 @@ export function handleOAuthResponse(req: Request, res: Response, next: NextFunct
       console.log(oAuthAccessToken);
       console.log(oAuthAccessTokenSecret);
       if (oAuthAccessTokenSecret && oAuthAccessToken) {
-        createTwitterBus(oAuthAccessToken, oAuthAccessTokenSecret).
+        twitterApi(oAuthAccessToken, oAuthAccessTokenSecret).
           get('account/verify_credentials', (err: any, result: any, response: any) => {
             userFBContext.set(result.id.toString(), {
               id: result.id,
@@ -105,16 +106,60 @@ export function getUserDetails(req: Request, res: Response, next: NextFunction) 
 
 export function updateStatus(req: Request, res: Response, next: NextFunction) {
   console.log(req.body.userTweet);
-  if (req.body.userTweet) {
-    let userObj = userFBContext.get(req.body.userId);
-    createTwitterBus(userObj.oAuthAccessToken, userObj.oAuthAccessTokenSecret).
-      post('statuses/update', { status: req.body.userTweet }, (err: any, result: any, response: any) => {
-        res.json({
-          response: result
-        });
-      });
+  let tweetType = '';
+
+  tweetType = req.body.tweetImg ? 'WITH_IMAGE' : 'WITHOUT_IMAGE';
+
+  switch (tweetType) {
+    case 'WITH_IMAGE':
+      updateStatusWithImage(req);
+      break;
+    case 'WITHOUT_IMAGE':
+      updateStatusWithOutImage(req);
+      break;
+    default:
+      break;
   }
 
+
+  function updateStatusWithImage(req: Request) {
+    if (req.body.tweetImg) {
+      let userObj = userFBContext.get(req.body.userId);
+      const twitApi = twitterApi(userObj.oAuthAccessToken, userObj.oAuthAccessTokenSecret);
+
+      twitApi.post('media/upload', { media_data: req.body.tweetImg }, (err: any, result: any, response: any) => {
+        const media_id = result.media_id_string;
+        var altText = "Small flowers in a planter on a sunny balcony, blossoming."
+        const meta_params = { media_id: media_id, alt_text: { text: altText } };
+
+        twitApi.post('media/metadata/create', meta_params, (err: any, result: any, response: any) => {
+          if (!err) {
+            // now we can reference the media and post a tweet (media will attach to the tweet)
+            var params = { status: req.body.userTweet , media_ids: [media_id] };
+
+            twitApi.post('statuses/update', params, (err: any, result: any, response: any) => {
+              console.log(result)
+              res.json({
+                response: result
+              });
+            })
+          }
+        });
+      });
+    }
+  }
+
+  function updateStatusWithOutImage(req: Request) {
+    if (req.body.userTweet) {
+      let userObj = userFBContext.get(req.body.userId);
+      twitterApi(userObj.oAuthAccessToken, userObj.oAuthAccessTokenSecret).
+        post('statuses/update', { status: req.body.userTweet }, (err: any, result: any, response: any) => {
+          res.json({
+            response: result
+          });
+        });
+    }
+  }
 }
 
 

@@ -24,8 +24,8 @@ export class ApplicationService {
     return this.http.get<any>(this.appUrl+`/auth/getUserDetails/${id}`);
   }
 
-  updateStatus(userId:string,userTweet:string){
-    return this.http.post<any>(this.appUrl+`/auth/updateStatus`, {userId:userId, userTweet:userTweet});
+  updateStatus(userId:string,userTweet:string, fileBase64Content:string){
+    return this.http.post<any>(this.appUrl+`/auth/updateStatus`, {userId:userId, userTweet:userTweet, tweetImg:fileBase64Content});
   }
 
 

@@ -7,6 +7,9 @@
     <br>
     <div><textarea [(ngModel)] = "userTweet" name="" id="" cols="30" rows="10"></textarea></div>
     <button (click) = "tweet()"> Add Tweet</button> &nbsp;&nbsp; <span *ngIf = "isPosted" >Posted!</span>
+
+    <input type="file" id="file" (change)="handleFileInput($event)">
+    
 </div>
 <div>
     <span>
