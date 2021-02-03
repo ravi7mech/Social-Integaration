@@ -1,4 +1,4 @@
-# Social Integaration
+# Twitter API Integaration Angular - Express - Typescript
 
 
 An Basic Angular Express starter app to manage the twitter user profiles on behalf of the [Twitter  App].
