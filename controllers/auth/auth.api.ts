@@ -3,13 +3,13 @@ import { OAuth } from "oauth";
 import * as Twit from "twit";
 
 
-const CONSUMER_KEY = '';
-const CONSUMER_SECRET = '';
+const CONSUMER_KEY = ''; // use your conumer api token here
+const CONSUMER_SECRET = ''; // use your conumer api token secret here
 const userFBContext = new Map();
 
 var oAuthTokenSecret = '';
-var oAuthAccessToken = ''; // use your conumer api token here
-var oAuthAccessTokenSecret = ''; // use your conumer api token secret here
+var oAuthAccessToken = ''; 
+var oAuthAccessTokenSecret = ''; 
 const NG_ROK_URL = 'https://a35b6f97396b.ngrok.io';
 
 const oauth = new OAuth(
